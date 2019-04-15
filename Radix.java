@@ -3,6 +3,12 @@ import java.util.*;
 
 public class Radix {
 
+  public static void main(String[] args) {
+  int[] data = {5,1,3,4,5,2,5,2,3,3,1,9};
+  radixsort(data);
+  System.out.println(Arrays.toString(data));
+}
+
   private static int getNthDigit(int num, int n) {
     String answer = "" + Math.abs(num);
 
@@ -53,19 +59,40 @@ public class Radix {
         digits[digit].add(0,element);
       }
     }
+
+    MyLinkedList<Integer> result = new MyLinkedList<Integer>();
+
+    if (i+ 1 == passes) {
+
+      if (! digits[0].equals(null)){
+        result.extend(digits[0]);
+      }
+
+      for (int idx=1;idx<10;idx++) {
+        while (digits[idx].size() > 0) {
+          int element = digits[idx].remove(0);
+          if (element > 0) result.add(element);
+          else result.add(0,element);
+        }
+      }
+    } else {
+      for (int idx=0;idx<10;idx++) {
+        if (! digits[idx].equals(null)) result.extend(digits[idx]);
+      }
+    }
+
+     radix(out,i+1,passes,newData);
   }
 
   private static int maxDigits(int[] data) {
-  int max = 0;
-  for (int index: data) {
-    if (Math.abs(index) > max){
-      max = Math.abs(index);
+    int max = 0;
+    for (int index: data) {
+      if (Math.abs(index) > max){
+        max = Math.abs(index);
+      }
     }
-  }
-  String stringMax = ""+max;
-  return stringMax.length();
+    String stringMax = ""+max;
+    return stringMax.length();
   }
 
-
-
-  }
+}
