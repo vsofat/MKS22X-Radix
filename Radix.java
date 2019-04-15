@@ -54,4 +54,18 @@ public class Radix {
       }
     }
   }
+
+  private static int maxDigits(int[] data) {
+  int max = 0;
+  for (int index: data) {
+    if (Math.abs(index) > max){
+      max = Math.abs(index);
+    }
+  }
+  String stringMax = ""+max;
+  return stringMax.length();
+  }
+
+
+
   }
