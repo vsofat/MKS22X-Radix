@@ -1,4 +1,4 @@
-import java.io.*;
+ import java.io.*;
 import java.util.*;
 
 public class Radix {
@@ -7,7 +7,7 @@ public class Radix {
   int[] data = {5,1,3,4,5,2,5,2,3,3,1,9};
   radixsort(data);
   System.out.println(Arrays.toString(data));
-}
+ }
 
   private static int getNthDigit(int num, int n) {
     String answer = "" + Math.abs(num);
@@ -29,60 +29,85 @@ public class Radix {
     return Integer.parseInt("" + ans2.charAt(index));
   }
 
-  private static void radix(MyLinkedList<Integer> data, int i, int passes, int[] newData) {
+  public static void radixsort(int[] data){
+   int passes = maxDigits(data);
 
-    if (i==passes) {
-      data.resetCur();
-      for (int l=0; l<data.size(); l++) {
-        newData[l] = data.getNext();
-      }
-      return;
+     MyLinkedList<Integer>[] digits = new MyLinkedList[10];
+
+     for (int i2 = 0; i2 < 10; i2++) {
+       digits[i2] = new MyLinkedList<Integer>();
+     }
+
+     for (int idx=0;idx<data.length;idx++) {
+       int element = data[idx];
+
+       int digit = getNthDigit(element,0);
+
+       if (element > 0) digits[digit].add(element);
+
+       else digits[digit].add(0,element);
+
+     }
+
+     MyLinkedList<Integer>  out = new MyLinkedList<Integer>();
+     for (int idx=0;idx<10;idx++) {
+       if (! digits[idx].equals(null)) out.extend(digits[idx]);
+     }
+
+     radix(out,1,passes,data);
+ }
+
+ private static void radix(MyLinkedList<Integer> data, int i, int passes, int[] dataa) {
+
+   if (i==passes) {
+
+     data.resetCur();
+     for (int l=0;l<data.size();l++) {
+       dataa[l] = data.getNext();
+     }
+     return;
+
     }
 
-    MyLinkedList<Integer>[] digits = new MyLinkedList[10];
+   MyLinkedList<Integer>[] digits = new MyLinkedList[10];
 
-    for (int i2=0; i2<10; i2++) {
-      digits[i2] = new MyLinkedList<Integer>();
-    }
+   for (int i2=0;i2<10;i2++) {
+     digits[i2] = new MyLinkedList<Integer>();
+   }
 
-    data.resetCur();
-    for (int idx=0;idx<data.size();idx++) {
+   data.resetCur();
+   for (int idx=0;idx<data.size();idx++) {
 
-      int element = data.getNext();
-      int digit = getNthDigit(element,i);
+     int element = data.getNext();
 
-      if (element > 0){
-        digits[digit].add(element);
-      }
+     int digit = getNthDigit(element,i);
 
-      else{
-        digits[digit].add(0,element);
-      }
-    }
+     if (element > 0) digits[digit].add(element);
 
-    MyLinkedList<Integer> result = new MyLinkedList<Integer>();
+     else digits[digit].add(0,element);
+   }
 
-    if (i+ 1 == passes) {
+     MyLinkedList<Integer> out = new MyLinkedList<Integer>();
 
-      if (! digits[0].equals(null)){
-        result.extend(digits[0]);
-      }
+     if (i+ 1==passes) {
 
-      for (int idx=1;idx<10;idx++) {
-        while (digits[idx].size() > 0) {
-          int element = digits[idx].remove(0);
-          if (element > 0) result.add(element);
-          else result.add(0,element);
-        }
-      }
-    } else {
-      for (int idx=0;idx<10;idx++) {
-        if (! digits[idx].equals(null)) result.extend(digits[idx]);
-      }
-    }
+       if (! digits[0].equals(null)) out.extend(digits[0]);
+       for (int idx=1;idx<10;idx++) {
+           while (digits[idx].size() > 0) {
+             int element = digits[idx].remove(0);
+             if (element > 0) out.add(element);
+             else out.add(0,element);
+           }
+       }
+     } else {
+       for (int idx=0;idx<10;idx++) {
+         if (! digits[idx].equals(null)) out.extend(digits[idx]);
+       }
+     }
 
-     radix(out,i+1,passes,newData);
-  }
+     radix(out,i+1,passes,dataa);
+
+ }
 
   private static int maxDigits(int[] data) {
     int max = 0;
