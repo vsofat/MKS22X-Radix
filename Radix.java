@@ -125,9 +125,10 @@ public class Radix {
           out.extend(digits[index]);
         }
       }
+    }
 
       radix(out,num+1,passes,dataArr);
-    }
+
   }
 
     private static int maxDigits(int[] data) {
