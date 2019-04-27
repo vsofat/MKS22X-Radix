@@ -46,11 +46,11 @@ public class Radix {
       int element = data[index];
       int digit = getNthDigit(element,0); // get the Nth digit of the data you are at
       if (element > 0){
-       digits[digit].add(element); // positive - add to end
-        }
+        digits[digit].add(element); // positive - add to end
+      }
       else{
         digits[digit].add(0,element); // negative - add to beg
-        }
+      }
     }
 
     MyLinkedList<Integer> result = new MyLinkedList<Integer>();
@@ -83,11 +83,11 @@ public class Radix {
 
     data.resetCur();
 
-    for (int idx=0;idx<data.size();idx++) {
+    for (int index = 0; index < data.size(); index++) {
 
       int element = data.getNext();
 
-      int digit = getNthDigit(element,i); // find the digit
+      int digit = getNthDigit(element,num); // find the digit
 
       if (element > 0){
         digits[digit].add(element); // positive - back
@@ -97,42 +97,44 @@ public class Radix {
       }
     }
 
-  MyLinkedList<Integer> out = new MyLinkedList<Integer>(); // readd data to this list
+    MyLinkedList<Integer> out = new MyLinkedList<Integer>(); // readd data to this list
 
-  if (num + 1 == passes) {
+    if (num + 1 == passes) {
 
-    if (! digits[0].equals(null)) out.extend(digits[0]);
-    for (int index = 1; index < 10; index++) {
-      while (digits[index].size() > 0) {
-        int element = digits[index].remove(0);
-        if (element > 0){
-          out.add(element);
+      if (! digits[0].equals(null)) out.extend(digits[0]);
+      for (int index = 1; index < 10; index++) {
+        while (digits[index].size() > 0) {
+          int element = digits[index].remove(0);
+          if (element > 0){
+            out.add(element);
+          }
+          else{
+            out.add(0,element);
+          }
+
         }
-        else{
-          out.add(0,element);
+      }
+    }
+
+    else {
+
+      for (int index = 0; index < 10; index++) { // links list
+        if (!digits[index].equals(null)){
+          out.extend(digits[index]);
+        }
       }
 
+      radix(out,num+1,passes,dataArr);
     }
   }
 
-  else {
-
-    for (int index = 0; index < 10; index++) { // links list
-      if (!digits[index].equals(null)){
-        out.extend(digits[index]);
+    private static int maxDigits(int[] data) {
+      int max = 0;
+      for (int num : data) {
+        if (Math.abs(num) > max) max = Math.abs(num);
+      }
+      String answer = "" + max;
+      return answer.length();
     }
+
   }
-
-  radix(out,num+1,passes,dataArr);
-}
-
-private static int maxDigits(int[] data) {
-  int max = 0;
-  for (int num : data) {
-    if (Math.abs(num) > max) max = Math.abs(num);
-  }
-  String answer = "" + max;
-  return answer.length();
-}
-
-}

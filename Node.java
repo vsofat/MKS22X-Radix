@@ -35,7 +35,7 @@ public class Node<E> {
     return next;
   }
 
-  public Node aoprev() {
+  public Node prev() {
     return prev;
   }
 
