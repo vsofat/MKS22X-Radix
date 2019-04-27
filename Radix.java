@@ -4,120 +4,135 @@ import java.util.*;
 public class Radix {
 
   public static void main(String[] args) {
-  int[] data = {5,1,3,4,5,2,5,2,3,3,1,9};
-  radixsort(data);
-  System.out.println(Arrays.toString(data));
- }
+    int[] data = {5,1,3,4,5,2,5,2,3,3,1,9};
+    radixsort(data);
+    System.out.println(Arrays.toString(data));
+  }
 
-  private static int getNthDigit(int num, int n) {
-    String answer = "" + Math.abs(num);
+  private static int getNthDigit(int len, int n) {
+    String s = "" + Math.abs(len);
 
-    if (answer.length() < n){
+    //base
+    //no zeroes
+    if (s.length() < n){
       return 0;
     }
 
-    int zeroes = (n - answer.length()) +1;
-    String ans2 = "";
+    int zeroes = (n - s.length()) + 1; // numbers of zeroes
 
-    for (int i=0;i<zeroes;i++) {
-      ans2 += "0";
+    String strZero = "";
+
+    for (int ind = 0; ind < zeroes; ind++) {
+      strZero += "0";
     }
 
-    ans2 += answer;
+    strZero += s;
 
-    int index = ans2.length() - n - 1;
-    return Integer.parseInt("" + ans2.charAt(index));
+    int digit = strZero.length() - n - 1;
+    return Integer.parseInt("" + strZero.charAt(digit));
   }
 
   public static void radixsort(int[] data){
-   int passes = maxDigits(data);
 
-     MyLinkedList<Integer>[] digits = new MyLinkedList[10];
+    int passes = maxDigits(data);
 
-     for (int i2 = 0; i2 < 10; i2++) {
-       digits[i2] = new MyLinkedList<Integer>();
-     }
+    MyLinkedList<Integer>[] digits = new MyLinkedList[10];
 
-     for (int idx=0;idx<data.length;idx++) {
-       int element = data[idx];
+    for (int bucket = 0; bucket < 10; bucket++) {
+      digits[bucket] = new MyLinkedList<Integer>();
+    }
 
-       int digit = getNthDigit(element,0);
+    for (int index = 0; index < data.length; index++) {
+      int element = data[index];
+      int digit = getNthDigit(element,0); // get the Nth digit of the data you are at
+      if (element > 0){
+       digits[digit].add(element); // positive - add to end
+        }
+      else{
+        digits[digit].add(0,element); // negative - add to beg
+        }
+    }
 
-       if (element > 0) digits[digit].add(element);
+    MyLinkedList<Integer> result = new MyLinkedList<Integer>();
 
-       else digits[digit].add(0,element);
-
-     }
-
-     MyLinkedList<Integer>  out = new MyLinkedList<Integer>();
-     for (int idx=0;idx<10;idx++) {
-       if (! digits[idx].equals(null)) out.extend(digits[idx]);
-     }
-
-     radix(out,1,passes,data);
- }
-
- private static void radix(MyLinkedList<Integer> data, int i, int passes, int[] dataa) {
-
-   if (i==passes) {
-
-     data.resetCur();
-     for (int l=0;l<data.size();l++) {
-       dataa[l] = data.getNext();
-     }
-     return;
+    for (int index = 0; index < 10; index++) {
+      if (!digits[index].equals(null)){
+        result.extend(digits[index]);
+      }
 
     }
 
-   MyLinkedList<Integer>[] digits = new MyLinkedList[10];
+    radix(result,1,passes,data);
+  }
 
-   for (int i2=0;i2<10;i2++) {
-     digits[i2] = new MyLinkedList<Integer>();
-   }
+  private static void radix(MyLinkedList<Integer> data, int num, int passes, int[] dataArr) {
 
-   data.resetCur();
-   for (int idx=0;idx<data.size();idx++) {
+    if (num == passes) {
+      data.resetCur();
+      for (int index = 0; index<data.size(); index++) {
+        dataArr[index] = data.getNext();
+      }
+      return; // do nothing
+    }
 
-     int element = data.getNext();
+    MyLinkedList<Integer>[] digits = new MyLinkedList[10]; // should have all bucks
 
-     int digit = getNthDigit(element,i);
+    for (int index = 0; index < 10; index++) {
+      digits[index] = new MyLinkedList<Integer>();
+    }
 
-     if (element > 0) digits[digit].add(element);
+    data.resetCur();
 
-     else digits[digit].add(0,element);
-   }
+    for (int idx=0;idx<data.size();idx++) {
 
-     MyLinkedList<Integer> out = new MyLinkedList<Integer>();
+      int element = data.getNext();
 
-     if (i+ 1==passes) {
+      int digit = getNthDigit(element,i); // find the digit
 
-       if (! digits[0].equals(null)) out.extend(digits[0]);
-       for (int idx=1;idx<10;idx++) {
-           while (digits[idx].size() > 0) {
-             int element = digits[idx].remove(0);
-             if (element > 0) out.add(element);
-             else out.add(0,element);
-           }
-       }
-     } else {
-       for (int idx=0;idx<10;idx++) {
-         if (! digits[idx].equals(null)) out.extend(digits[idx]);
-       }
-     }
-
-     radix(out,i+1,passes,dataa);
-
- }
-
-  private static int maxDigits(int[] data) {
-    int max = 0;
-    for (int index: data) {
-      if (Math.abs(index) > max){
-        max = Math.abs(index);
+      if (element > 0){
+        digits[digit].add(element); // positive - back
+      }
+      else{
+        digits[digit].add(0,element); // negative - beginning
       }
     }
-    String stringMax = ""+max;
-    return stringMax.length();
+
+  MyLinkedList<Integer> out = new MyLinkedList<Integer>(); // readd data to this list
+
+  if (num + 1 == passes) {
+
+    if (! digits[0].equals(null)) out.extend(digits[0]);
+    for (int index = 1; index < 10; index++) {
+      while (digits[index].size() > 0) {
+        int element = digits[index].remove(0);
+        if (element > 0){
+          out.add(element);
+        }
+        else{
+          out.add(0,element);
+      }
+
+    }
   }
+
+  else {
+
+    for (int index = 0; index < 10; index++) { // links list
+      if (!digits[index].equals(null)){
+        out.extend(digits[index]);
+    }
+  }
+
+  radix(out,num+1,passes,dataArr);
+}
+
+private static int maxDigits(int[] data) {
+  int max = 0;
+  for (int num : data) {
+    if (Math.abs(num) > max) max = Math.abs(num);
+  }
+  String answer = "" + max;
+  return answer.length();
+}
 
 }
