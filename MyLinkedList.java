@@ -2,6 +2,37 @@ import java.util.*;
 import java.io.*;
 
 public class MyLinkedList<E> {
+
+
+  public static void main(String[] args) {
+
+      MyLinkedList zeynep = new MyLinkedList();
+      System.out.println(zeynep);
+      zeynep.add(1);
+      zeynep.add(3);
+      zeynep.add(6);
+      System.out.println(zeynep);
+      //System.out.println(zeynep.getNthNode(0));
+
+      //Node n = zeynep.getNthNode(0).next();
+      //System.out.println(n.next());
+
+      System.out.println(zeynep.getNext());
+      System.out.println(zeynep.getNext());
+      System.out.println(zeynep.getNext());
+      System.out.println(zeynep.getNext());
+      System.out.println(zeynep.getNext());
+      System.out.println(zeynep.getNext());
+
+      MyLinkedList[] morning = new MyLinkedList[10];
+      for (int i=0;i<10;i++) {
+        morning[i] = new MyLinkedList();
+      }
+      morning[1].add(0,5);
+      System.out.println(morning[1]);
+
+    }
+    
  private int size;
  private Node start,end,current;
 
@@ -30,14 +61,17 @@ public class MyLinkedList<E> {
   public boolean add(E value) {
 
     Node toAdd = new Node(value);
+
     if (start == null && end == null) {
       start = toAdd;
       current = start;
     }
+
     else {
       toAdd.setPrev(end);
       end.setNext(toAdd);
     }
+
     end = toAdd;
     size ++;
     return true;
@@ -72,10 +106,13 @@ public class MyLinkedList<E> {
   }
 
 public void add(int index,E value) {
+
   if (index > size() || index < 0) {
     throw new IndexOutOfBoundsException("Index " + index + " is out of bounds.");
   }
+
   Node toAdd = new Node(value);
+
   if (index == 0) {
     if (size > 0) {
       Node atIndex = getNthNode(index);
@@ -102,43 +139,57 @@ public void add(int index,E value) {
   size ++;
 }
 
-//@SuppressWarnings("unchecked")
+@SuppressWarnings("unchecked")
 public E remove(int index) {
+
   if (index >= size() || index < 0) {
     throw new IndexOutOfBoundsException("Index " + index + " is out of bounds.");
   }
+
   Node current = getNthNode(index);
+
   if (index == 0) {
     if (size() == 1) {
       start = null;
-    } else {
+    }
+    else {
     start = getNthNode(1);
     start.setPrev(null);
   }
-  } else if (index + 1 == size()) {
+  }
+
+  else if (index + 1 == size()) {
     end = getNthNode(index-1);
     end.setNext(null);
-  } else {
+  }
+
+  else {
     Node prevNode = current.prev();
     Node nextNode = current.next();
     prevNode.setNext(nextNode);
     nextNode.setPrev(prevNode);
   }
+
   size --;
   return (E)current.getData();
 }
 
 public void extend(MyLinkedList other){
+
     if (other.size() > 0) {
       Node otherFirst = other.getNthNode(0);
+
       if (size() > 0) {
         end.setNext(otherFirst);
-      } else {
+      }
+
+      else {
         start = otherFirst;
       }
       end = other.end;
       size += other.size();
     }
+
     other.size = 0;
     other.start = null;
     other.end = null;
@@ -146,8 +197,12 @@ public void extend(MyLinkedList other){
 
   public E getNext() {
     E out = (E) current.getData();
-    if (current == end) current = start;
-    else current = current.next();
+    if (current == end){
+      current = start;
+    }
+    else{
+      current = current.next();
+    }
     return out;
   }
 

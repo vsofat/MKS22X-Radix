@@ -83,7 +83,7 @@ public class Radix {
 
     data.resetCur();
 
-    for (int index = 0; index < data.size(); index++) {
+    for (int index = 0; index < data.size(); index ++) {
 
       int element = data.getNext();
 
@@ -101,7 +101,9 @@ public class Radix {
 
     if (num + 1 == passes) {
 
-      if (! digits[0].equals(null)) out.extend(digits[0]);
+      if (! digits[0].equals(null)){
+        out.extend(digits[0]);
+      }
       for (int index = 1; index < 10; index++) {
         while (digits[index].size() > 0) {
           int element = digits[index].remove(0);
